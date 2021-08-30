@@ -88,9 +88,15 @@ public class WebServer {
 	public String getResource(URI resourceURI) throws IOException{
 		//System.out.println("Received URI path: " + resourceURI.getPath());
 		//System.out.println("Received URI query: " + resourceURI.getQuery());
-
-		File htmlFile = new File("target/classes/public" + resourceURI.getPath());
-		BufferedReader in = new BufferedReader(new FileReader(htmlFile));
+		
+		File htmlFile;
+		//System.out.println("res: "+resourceURI.getPath().length());
+		if (resourceURI.getPath().length() != 1) {
+			htmlFile = new File("target/classes/public" + resourceURI.getPath());			
+		}else {			
+			htmlFile = new File("target/classes/public/index.html");						
+		}
+		BufferedReader in = new BufferedReader(new FileReader(htmlFile));	
 
 		String str, type = null;
 		type = setMimeTypeContent(resourceURI.getPath());
