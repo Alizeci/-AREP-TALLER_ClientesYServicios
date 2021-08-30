@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -cp target/classes:target/dependency/* co.edu.escuelaing.arep.networking.App
+web: java -cp target/classes co.edu.escuelaing.arep.networking.App
