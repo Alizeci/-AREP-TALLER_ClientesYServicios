@@ -72,9 +72,6 @@ public class WebServer {
 		try {
 			resourceURI = new URI(uriStr);
 			outputLine = getResource(resourceURI);
-			
-			//System.out.println("------content-file-------");
-			//System.out.println(outputLine);
 			out.println(outputLine);
 		} catch (URISyntaxException e) {
 			Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, null, e);
