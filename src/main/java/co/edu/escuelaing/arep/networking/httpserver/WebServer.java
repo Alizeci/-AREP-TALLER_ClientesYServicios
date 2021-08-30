@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class WebServer {
-	
+
 	private static final WebServer _instance = new WebServer();
 
 	public static WebServer getInstance() {
@@ -42,7 +42,7 @@ public class WebServer {
 			try {
 				System.out.println("Listo para recibir ...");
 				clientSocket = serverSocket.accept();
-				
+
 			} catch (IOException e) {
 				System.err.println("Accept failed.");
 				System.exit(1);
@@ -53,14 +53,15 @@ public class WebServer {
 	}
 
 	public void serverConnection(Socket clientSocket) throws IOException {
-		PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true); //envío de msgs al Cliente.
-		BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); //recibir msgs del Cliente
+		PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true); // envío de msgs al Cliente.
+		BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); // recibir msgs
+																										// del Cliente
 
 		String inputLine, outputLine;
 		StringBuilder request = new StringBuilder();
 
 		while ((inputLine = in.readLine()) != null) {
-			//System.out.println("Received: " + inputLine);
+			// System.out.println("Received: " + inputLine);
 			request.append(inputLine);
 			if (!in.ready()) {
 				break;
@@ -68,7 +69,7 @@ public class WebServer {
 		}
 		String uriStr = request.toString().split(" ")[1];
 		URI resourceURI;
-		
+
 		try {
 			resourceURI = new URI(uriStr);
 			outputLine = getResource(resourceURI);
@@ -76,38 +77,46 @@ public class WebServer {
 		} catch (URISyntaxException e) {
 			Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, null, e);
 		}
-		
+
 		out.close();
 		in.close();
 		clientSocket.close();
 	}
 
-	public String getResource(URI resourceURI) throws IOException{
-		//System.out.println("Received URI path: " + resourceURI.getPath());
-		//System.out.println("Received URI query: " + resourceURI.getQuery());
-		
-		File htmlFile = new File("target/classes/public" + resourceURI.getPath());
-		BufferedReader in = new BufferedReader(new FileReader(htmlFile));	
+	public String getResource(URI resourceURI) throws IOException {
+		// System.out.println("Received URI path: " + resourceURI.getPath());
+		// System.out.println("Received URI query: " + resourceURI.getQuery());
+
+		File htmlFile;
+		// System.out.println("res: "+resourceURI.getPath().length());
+		if (resourceURI.getPath().length() != 1) {
+			htmlFile = new File("target/classes/public" + resourceURI.getPath());
+		} else {
+			htmlFile = new File("target/classes/public/index.html");
+		}
+		BufferedReader in = new BufferedReader(new FileReader(htmlFile));
 
 		String str, type = null;
 		type = setMimeTypeContent(resourceURI.getPath());
-		StringBuilder sb = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: "+type + "\r\n"); // Define MimeType of file
-		
+		StringBuilder sb = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: " + type + "\r\n"); // Define
+																										// MimeType of
+																										// file
+
 		while ((str = in.readLine()) != null) {
 			sb.append(str + "\n");
 		}
-		
+
 		return sb.toString();
 	}
 
 	private String setMimeTypeContent(String path) {
 		String type = null;
-		if(path.contains(".css")) {
+		if (path.contains(".css")) {
 			type = "text/css";
-		}else if (path.contains(".html")){
-			type = "text/html";		
-		}else if (path.contains(".js")){
-			type = "text/javascript";		
+		} else if (path.contains(".html")) {
+			type = "text/html";
+		} else if (path.contains(".js")) {
+			type = "text/javascript";
 		}
 		return type;
 	}
