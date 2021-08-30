@@ -16,7 +16,7 @@ public class App {
 
 		WebServer httpServer = WebServer.getInstance();
 		try {
-			httpServer.startSocket(args);
+			httpServer.startSocket(args, port);
 		} catch (IOException e) {
 			Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, e);
 		}

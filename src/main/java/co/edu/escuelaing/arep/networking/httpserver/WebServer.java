@@ -27,10 +27,10 @@ public class WebServer {
 
 	}
 
-	public void startSocket(String[] args) throws IOException {
+	public void startSocket(String[] args, int port) throws IOException {
 		ServerSocket serverSocket = null;
 		try {
-			serverSocket = new ServerSocket(35000);
+			serverSocket = new ServerSocket(port);
 		} catch (IOException e) {
 			System.err.println("Could not listen on port: 35000.");
 			System.exit(1);
@@ -86,13 +86,7 @@ public class WebServer {
 		//System.out.println("Received URI path: " + resourceURI.getPath());
 		//System.out.println("Received URI query: " + resourceURI.getQuery());
 		
-		File htmlFile;
-		//System.out.println("res: "+resourceURI.getPath().length());
-		if (resourceURI.getPath().length() != 1) {
-			htmlFile = new File("target/classes/public" + resourceURI.getPath());			
-		}else {			
-			htmlFile = new File("target/classes/public/index.html");						
-		}
+		File htmlFile = new File("target/classes/public" + resourceURI.getPath());
 		BufferedReader in = new BufferedReader(new FileReader(htmlFile));	
 
 		String str, type = null;
