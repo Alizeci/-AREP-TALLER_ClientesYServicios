@@ -2,7 +2,7 @@
 Este taller presenta diferentes retos que loa ayudaran a explorar los conceptos de esquemas de nombres y de clientes y servicios. Adicionalmente, el taller le ayudará a explorar la arquitectura de las aplicaciones distribuidas sobre internet.
 
 #### Enlace a Heroku
-[![Heroku](https://img.icons8.com/color/48/000000/heroku.png)](https://sparkwebapp-taller01.herokuapp.com)
+[![Heroku](https://img.icons8.com/color/48/000000/heroku.png)](https://website-client-server.herokuapp.com)
 
 ## Herramientas utilizadas
 
