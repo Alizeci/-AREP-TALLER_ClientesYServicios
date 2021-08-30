@@ -2,6 +2,7 @@ package co.edu.escuelaing.arep.networking.httpserver;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,11 +11,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class WebServer {
+	
 	private static final WebServer _instance = new WebServer();
 
-	private static WebServer getInstance() {
+	public static WebServer getInstance() {
 
 		return _instance;
 	}
@@ -23,7 +27,7 @@ public class WebServer {
 
 	}
 
-	public void startSocket(String[] args) throws IOException, URISyntaxException, InterruptedException {
+	public void startSocket(String[] args) throws IOException {
 		ServerSocket serverSocket = null;
 		try {
 			serverSocket = new ServerSocket(35000);
@@ -48,7 +52,7 @@ public class WebServer {
 		serverSocket.close();
 	}
 
-	public void serverConnection(Socket clientSocket) throws IOException, URISyntaxException {
+	public void serverConnection(Socket clientSocket) throws IOException {
 		PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true); //envío de msgs al Cliente.
 		BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); //recibir msgs del Cliente
 
@@ -56,26 +60,32 @@ public class WebServer {
 		StringBuilder request = new StringBuilder();
 
 		while ((inputLine = in.readLine()) != null) {
-			System.out.println("Received: " + inputLine);
+			//System.out.println("Received: " + inputLine);
 			request.append(inputLine);
 			if (!in.ready()) {
 				break;
 			}
 		}
 		String uriStr = request.toString().split(" ")[1];
-		URI resourceURI = new URI(uriStr);
-		outputLine = getResource(resourceURI);
+		URI resourceURI;
 		
-		//System.out.println("------content-file-------");
-		//System.out.println(outputLine);
-		out.println(outputLine);
+		try {
+			resourceURI = new URI(uriStr);
+			outputLine = getResource(resourceURI);
+			
+			//System.out.println("------content-file-------");
+			//System.out.println(outputLine);
+			out.println(outputLine);
+		} catch (URISyntaxException e) {
+			Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, null, e);
+		}
 		
 		out.close();
 		in.close();
 		clientSocket.close();
 	}
 
-	public String getResource(URI resourceURI) throws IOException {
+	public String getResource(URI resourceURI) throws IOException{
 		//System.out.println("Received URI path: " + resourceURI.getPath());
 		//System.out.println("Received URI query: " + resourceURI.getQuery());
 
@@ -111,9 +121,5 @@ public class WebServer {
 				+ "		<title>Title of the document</title>\n" + "	</head>\n" + "	<body>\n"
 				+ "		My Web Site Space!!\n" + "	</body>\n" + "</html>\n";
 		return outputLine;
-	}
-
-	public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
-		WebServer.getInstance().startSocket(args);
 	}
 }
