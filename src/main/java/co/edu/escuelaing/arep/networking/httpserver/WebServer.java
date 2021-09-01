@@ -1,9 +1,6 @@
 package co.edu.escuelaing.arep.networking.httpserver;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -11,11 +8,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class WebServer {
-
+	
 	private static final WebServer _instance = new WebServer();
 
 	public static WebServer getInstance() {
@@ -57,11 +58,11 @@ public class WebServer {
 		BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); // recibir msgs
 																										// del Cliente
 
-		String inputLine, outputLine;
-		StringBuilder request = new StringBuilder();
+		String inputLine;
+		StringBuilder outputLine, request = new StringBuilder();
 
 		while ((inputLine = in.readLine()) != null) {
-			// System.out.println("Received: " + inputLine);
+			System.out.println("Received: " + inputLine);
 			request.append(inputLine);
 			if (!in.ready()) {
 				break;
@@ -73,6 +74,9 @@ public class WebServer {
 		try {
 			resourceURI = new URI(uriStr);
 			outputLine = getResource(resourceURI);
+
+			// System.out.println("------content-file-------");
+			// System.out.println(outputLine);
 			out.println(outputLine);
 		} catch (URISyntaxException e) {
 			Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, null, e);
@@ -83,30 +87,31 @@ public class WebServer {
 		clientSocket.close();
 	}
 
-	public String getResource(URI resourceURI) throws IOException {
-		// System.out.println("Received URI path: " + resourceURI.getPath());
-		// System.out.println("Received URI query: " + resourceURI.getQuery());
+	public StringBuilder getResource(URI resourceURI) throws IOException {
+		System.out.println("Received URI path: " + resourceURI.getPath());
+		System.out.println("Received URI query: " + resourceURI.getQuery());
+		
+		StringBuilder response = new StringBuilder();
+		Charset charset = Charset.forName("UTF-8");
+		Path htmlFile = Paths.get("target/classes/public" + resourceURI.getPath());
+		
+		try (BufferedReader in = Files.newBufferedReader(htmlFile, charset)) {
 
-		File htmlFile;
-		// System.out.println("res: "+resourceURI.getPath().length());
-		if (resourceURI.getPath().length() != 1) {
-			htmlFile = new File("target/classes/public" + resourceURI.getPath());
-		} else {
-			htmlFile = new File("target/classes/public/index.html");
+			String str, type = null;
+			type = setMimeTypeContent(resourceURI.getPath());
+			response = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: " + type + "\r\n"); // Define
+																											// MimeType
+																											// of file
+			while ((str = in.readLine()) != null) {
+				response.append(str + "\n");
+			}
+
+		} catch (IOException e) {
+			System.err.format("IOException: %s%n", e);
+			response = default404Response();
 		}
-		BufferedReader in = new BufferedReader(new FileReader(htmlFile));
 
-		String str, type = null;
-		type = setMimeTypeContent(resourceURI.getPath());
-		StringBuilder sb = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: " + type + "\r\n"); // Define
-																										// MimeType of
-																										// file
-
-		while ((str = in.readLine()) != null) {
-			sb.append(str + "\n");
-		}
-
-		return sb.toString();
+		return response;
 	}
 
 	private String setMimeTypeContent(String path) {
@@ -121,11 +126,11 @@ public class WebServer {
 		return type;
 	}
 
-	private String computeDefaultResponse() {
-		String outputLine = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n" + "<!DOCTYPE html>\n"
+	private StringBuilder default404Response() {
+		StringBuilder outputLine = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n" + "<!DOCTYPE html>\n"
 				+ "<html>\n" + "	<head>\n" + "		<meta charset=\"UTF-8\">\n"
-				+ "		<title>Title of the document</title>\n" + "	</head>\n" + "	<body>\n"
-				+ "		My Web Site Space!!\n" + "	</body>\n" + "</html>\n";
+				+ "		<title>Error</title>\n" + "	</head>\n" + "	<body>\n"
+				+ "		<h1>404</h1>\n" + "	</body>\n" + "</html>\n");
 		return outputLine;
 	}
 }

@@ -8,15 +8,13 @@ import co.edu.escuelaing.arep.networking.httpserver.WebServer;
 
 public class App {
 	
-	private static int port = 35000;
-
+	public static final Integer PORT = 35000;
+	
 	public static void main(String[] args) {
-		port = getPort();
-		//System.out.println("Server is starting...");
 
 		WebServer httpServer = WebServer.getInstance();
 		try {
-			httpServer.startSocket(args, port);
+			httpServer.startSocket(args, getPort());
 		} catch (IOException e) {
 			Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, e);
 		}
@@ -33,6 +31,6 @@ public class App {
 		if (System.getenv("PORT") != null) {
 			return Integer.parseInt(System.getenv("PORT"));
 		}
-		return 35000; // returns default port if heroku-port isn't set (i.e. on localhost)
+		return PORT; // returns default port if heroku-port isn't set (i.e. on localhost)
 	}
 }
