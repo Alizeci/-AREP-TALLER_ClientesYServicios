@@ -1,6 +1,7 @@
 package co.edu.escuelaing.arep.networking;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +16,7 @@ public class App {
 		WebServer httpServer = WebServer.getInstance();
 		try {
 			httpServer.startSocket(args, getPort());
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, e);
 		}
 	}

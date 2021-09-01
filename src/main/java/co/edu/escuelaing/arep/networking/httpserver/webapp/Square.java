@@ -4,8 +4,8 @@ import co.edu.escuelaing.arep.networking.httpserver.myspring.Service;
 
 public class Square {
 	
-	@Service
-	public Double square() {
+	@Service(uri="/square")
+	public static Double square() {
 		return 2.0 * 2.0;
 	}
 

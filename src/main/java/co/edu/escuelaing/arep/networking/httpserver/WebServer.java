@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
@@ -14,6 +16,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import co.edu.escuelaing.arep.networking.httpserver.myspring.Service;
 
 public class WebServer {
 	
@@ -28,7 +32,7 @@ public class WebServer {
 
 	}
 
-	public void startSocket(String[] args, int port) throws IOException {
+	public void startSocket(String[] args, int port) throws IOException, URISyntaxException {
 		ServerSocket serverSocket = null;
 		try {
 			serverSocket = new ServerSocket(port);
@@ -53,13 +57,13 @@ public class WebServer {
 		serverSocket.close();
 	}
 
-	public void serverConnection(Socket clientSocket) throws IOException {
+	public void serverConnection(Socket clientSocket) throws IOException, URISyntaxException {
 		PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true); // envío de msgs al Cliente.
 		BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); // recibir msgs
 																										// del Cliente
 
-		String inputLine;
-		StringBuilder outputLine, request = new StringBuilder();
+		String inputLine, outputLine;
+		StringBuilder request = new StringBuilder();
 
 		while ((inputLine = in.readLine()) != null) {
 			System.out.println("Received: " + inputLine);
@@ -68,28 +72,45 @@ public class WebServer {
 				break;
 			}
 		}
+		
 		String uriStr = request.toString().split(" ")[1];
-		URI resourceURI;
-
-		try {
-			resourceURI = new URI(uriStr);
-			outputLine = getResource(resourceURI);
-
-			// System.out.println("------content-file-------");
-			// System.out.println(outputLine);
-			out.println(outputLine);
-		} catch (URISyntaxException e) {
-			Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, null, e);
+		URI resourceURI = new URI(uriStr);
+		
+		System.out.println("Received URI path: " + resourceURI.getPath());
+		System.out.println("Received URI query: " + resourceURI.getQuery());
+		
+		if (resourceURI.toString().startsWith("/appuser")) {
+			outputLine = getComponentResource(resourceURI);	
+		}else {
+			outputLine = getResource(resourceURI);	
 		}
+		out.println(outputLine);
 
 		out.close();
 		in.close();
 		clientSocket.close();
 	}
+	//Probar http://localhost:35000/appuser/co.edu.escuelaing.arep.networking.httpserver.webapp.Square?5, este muestra 4.0
+	private String getComponentResource(URI resourceURI) {
+		String response = default404Response();
+		try {
+			String classPath = resourceURI.getPath().toString().replaceAll("/appuser/", "");
+			Class component = Class.forName(classPath);
+			for(Method m : component.getDeclaredMethods()) {
+				if(m.isAnnotationPresent(Service.class)) {
+					response = m.invoke(null).toString();
+					response = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n" + response;
+				}
+			}
+		} catch(ClassNotFoundException | InvocationTargetException | IllegalAccessException | IllegalArgumentException e) {
+			Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, null, e);
+			response = default404Response();
+		}
+		return response;
+	}
 
-	public StringBuilder getResource(URI resourceURI) throws IOException {
-		System.out.println("Received URI path: " + resourceURI.getPath());
-		System.out.println("Received URI query: " + resourceURI.getQuery());
+	//Probar localhost:35000/demo.html, este lee el .html, .css y .js
+	public String getResource(URI resourceURI) throws IOException {
 		
 		StringBuilder response = new StringBuilder();
 		Charset charset = Charset.forName("UTF-8");
@@ -108,10 +129,10 @@ public class WebServer {
 
 		} catch (IOException e) {
 			System.err.format("IOException: %s%n", e);
-			response = default404Response();
+			return default404Response();
 		}
 
-		return response;
+		return response.toString();
 	}
 
 	private String setMimeTypeContent(String path) {
@@ -126,11 +147,11 @@ public class WebServer {
 		return type;
 	}
 
-	private StringBuilder default404Response() {
-		StringBuilder outputLine = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n" + "<!DOCTYPE html>\n"
+	private String default404Response() {
+		String outputLine = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n" + "<!DOCTYPE html>\n"
 				+ "<html>\n" + "	<head>\n" + "		<meta charset=\"UTF-8\">\n"
 				+ "		<title>Error</title>\n" + "	</head>\n" + "	<body>\n"
-				+ "		<h1>404</h1>\n" + "	</body>\n" + "</html>\n");
+				+ "		<h1>NOT FOUND 404</h1>\n" + "	</body>\n" + "</html>\n";
 		return outputLine;
 	}
 }
