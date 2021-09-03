@@ -66,7 +66,7 @@ public class WebServer {
 		StringBuilder request = new StringBuilder();
 
 		while ((inputLine = in.readLine()) != null) {
-			System.out.println("Received: " + inputLine);
+			//System.out.println("Received: " + inputLine);
 			request.append(inputLine);
 			if (!in.ready()) {
 				break;
@@ -76,8 +76,8 @@ public class WebServer {
 		String uriStr = request.toString().split(" ")[1];
 		URI resourceURI = new URI(uriStr);
 		
-		System.out.println("Received URI path: " + resourceURI.getPath());
-		System.out.println("Received URI query: " + resourceURI.getQuery());
+		//System.out.println("Received URI path: " + resourceURI.getPath());
+		//System.out.println("Received URI query: " + resourceURI.getQuery());
 		
 		if (resourceURI.toString().startsWith("/appuser")) {
 			outputLine = getComponentResource(resourceURI);	
@@ -90,6 +90,7 @@ public class WebServer {
 		in.close();
 		clientSocket.close();
 	}
+	
 	//Probar http://localhost:35000/appuser/co.edu.escuelaing.arep.networking.httpserver.webapp.Square?5, este muestra 4.0
 	private String getComponentResource(URI resourceURI) {
 		String response = default404Response();
