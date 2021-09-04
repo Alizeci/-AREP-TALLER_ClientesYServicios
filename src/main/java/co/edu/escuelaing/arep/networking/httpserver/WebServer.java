@@ -73,7 +73,10 @@ public class WebServer {
 			}
 		}
 		
-		String uriStr = request.toString().split(" ")[1];
+		//System.out.println("request: " + request.toString());
+		//System.out.println("de: "+request.toString().substring(4,request.toString().indexOf('H')));
+		String uriStr = request.toString().substring(4,request.toString().indexOf('H')-1);
+		System.out.println("uriStr: " + uriStr);
 		URI resourceURI = new URI(uriStr);
 		
 		//System.out.println("Received URI path: " + resourceURI.getPath());
@@ -127,7 +130,6 @@ public class WebServer {
 			while ((str = in.readLine()) != null) {
 				response.append(str + "\n");
 			}
-
 		} catch (IOException e) {
 			System.err.format("IOException: %s%n", e);
 			return default404Response();
