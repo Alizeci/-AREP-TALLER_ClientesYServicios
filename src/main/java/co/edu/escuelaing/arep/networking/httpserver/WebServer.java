@@ -75,8 +75,10 @@ public class WebServer {
 		
 		String uriStr;
 		if (request.toString().equals("")) {
-			uriStr  = "/";
+			System.out.println("request: " + request.toString());
+			uriStr  = "/demo.html";
 		}else {
+			System.out.println("request: " + request.toString());
 			uriStr = request.toString().split(" ")[1];
 		}
 		System.out.println("uriStr: " + uriStr);
