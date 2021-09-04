@@ -73,8 +73,12 @@ public class WebServer {
 			}
 		}
 		
-		System.out.println("request: " + request.toString());
-		String uriStr = request.toString().split(" ")[1];
+		String uriStr;
+		if (request.toString().equals("")) {
+			uriStr  = "/";
+		}else {
+			uriStr = request.toString().split(" ")[1];
+		}
 		System.out.println("uriStr: " + uriStr);
 		URI resourceURI = new URI(uriStr);
 		
