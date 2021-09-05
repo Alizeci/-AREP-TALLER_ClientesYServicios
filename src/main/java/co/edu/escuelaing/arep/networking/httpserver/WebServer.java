@@ -73,14 +73,15 @@ public class WebServer {
 			}
 		}
 
-		String uriStr;
+		/*String uriStr;
 		System.out.println("request: " + request.toString());
 		if (request.toString().equals("")) {
-			System.out.println("entra solo la primera vez");
 			uriStr = "/";
 		}else {
 			uriStr = request.toString().split(" ")[1];
-		}
+		}*/
+		
+		String uriStr = request.toString().split(" ")[1];
 		System.out.println("uriStr: " + uriStr);
 		URI resourceURI = new URI(uriStr);
 
