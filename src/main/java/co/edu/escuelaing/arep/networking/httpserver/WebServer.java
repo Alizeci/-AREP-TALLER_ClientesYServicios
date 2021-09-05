@@ -59,7 +59,7 @@ public class WebServer {
 			los_outputStream = clientSocket.getOutputStream();
 			lis_inputStream = clientSocket.getInputStream();
 
-			if ((los_outputStream != null) && (lis_inputStream != null) && (lis_inputStream.available() > 0)) {
+			if ((los_outputStream != null) && (lis_inputStream != null)) {
 
 				String inputLine, outputLine;
 				StringBuilder request;
