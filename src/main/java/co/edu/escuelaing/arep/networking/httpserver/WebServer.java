@@ -54,19 +54,22 @@ public class WebServer {
 			PrintWriter out;
 			BufferedReader in;
 			OutputStream los_outputStream;
-			InputStream lin_inputStream;
+			InputStream lis_inputStream;
+			InputStreamReader lir_inputStream;
 
 			los_outputStream = clientSocket.getOutputStream();
-			lin_inputStream = clientSocket.getInputStream();
+			lis_inputStream = clientSocket.getInputStream();
+			lir_inputStream = new InputStreamReader(lis_inputStream);
 
-			if (los_outputStream != null && lin_inputStream != null) {
+			System.out.println("inpustream: "+ lir_inputStream);
+			if ((los_outputStream != null) && (lis_inputStream != null) && (lir_inputStream.ready())) {
 				String inputLine, outputLine;
 				StringBuilder request;
 
 				request = new StringBuilder();
 				out = new PrintWriter(los_outputStream, true); // envío de msgs al Cliente.
-				in = new BufferedReader(new InputStreamReader(lin_inputStream)); // recibir msgs del Cliente
-
+				in = new BufferedReader(lir_inputStream); // recibir msgs del Cliente
+				System.out.println("tiene lineas por leer: "+ in.ready());
 				if (in != null && in.ready()) {
 
 					while ((inputLine = in.readLine()) != null) {
@@ -102,8 +105,7 @@ public class WebServer {
 						}
 
 					}
-					// System.out.println("Received URI path: " + resourceURI.getPath());
-					// System.out.println("Received URI query: " + resourceURI.getQuery());
+
 					out.close();
 					in.close();
 				}else {					
