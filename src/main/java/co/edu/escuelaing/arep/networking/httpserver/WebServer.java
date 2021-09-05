@@ -76,7 +76,8 @@ public class WebServer {
                 }
                 String[] ls_request;
                 ls_request = request.toString().split(" ");
-
+                
+                System.out.println(ls_request.toString());
                 if ((ls_request != null)) {
                 	try {
                 		String ls_uriStr;
@@ -89,7 +90,7 @@ public class WebServer {
                 			outputLine = getResource(resourceURI);
                 			out.println(outputLine);
                 		}	
-                	}catch(IOException e) {
+                	}catch(ArrayIndexOutOfBoundsException e) {
                 		System.out.println(ls_request.toString());
                 		throw new IOException("ServerConnection ls_request  "+ e.getMessage());
                 	}
