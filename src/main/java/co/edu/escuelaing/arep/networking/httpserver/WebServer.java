@@ -90,6 +90,7 @@ public class WebServer {
                 			out.println(outputLine);
                 		}	
                 	}catch(IOException e) {
+                		System.out.println(ls_request.toString());
                 		throw new IOException("ServerConnection ls_request  "+ e.getMessage());
                 	}
 
