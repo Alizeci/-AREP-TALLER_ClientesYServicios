@@ -63,19 +63,24 @@ public class WebServer {
 
 				String inputLine, outputLine;
 				StringBuilder request;
+				InputStreamReader lisr_inputStreamReader;
 
 				request = new StringBuilder();
+				lisr_inputStreamReader = new InputStreamReader(lis_inputStream);
 				out = new PrintWriter(los_outputStream, true); // envío de msgs al Cliente.
-				in = new BufferedReader(new InputStreamReader(lis_inputStream)); // recibir msgs del Cliente
-				
-				System.out.println("tiene lineas por leer: "+ in.ready());
-				if (in != null && in.ready()) {
 
-					while ((inputLine = in.readLine()) != null) {
-						//System.out.println("Received: " + inputLine);
-						request.append(inputLine);
-						if (!in.ready()) {
-							break;
+				if (lisr_inputStreamReader != null) {
+					in = new BufferedReader(lisr_inputStreamReader); // recibir msgs del Cliente
+
+					System.out.println("tiene lineas por leer: " + in.ready());
+					if (in != null && in.ready()) {
+
+						while ((inputLine = in.readLine()) != null) {
+							// System.out.println("Received: " + inputLine);
+							request.append(inputLine);
+							if (!in.ready()) {
+								break;
+							}
 						}
 					}
 					String ls_request;
@@ -96,7 +101,7 @@ public class WebServer {
 							if ((ls_uriStr != null) && (!ls_uriStr.isEmpty())) {
 								URI resourceURI;
 								resourceURI = new URI(ls_uriStr);
-								System.out.println("resourceURI: "+ resourceURI);
+								System.out.println("resourceURI: " + resourceURI);
 
 								outputLine = getResource(resourceURI);
 								out.println(outputLine);
@@ -106,9 +111,10 @@ public class WebServer {
 
 					out.close();
 					in.close();
-				}else {					
-					throw new IOException("ServerConnection BufferReader input vacío o nulo!");
 				}
+			} else {
+				throw new IOException("ServerConnection BufferReader input vacío o nulo!");
+
 			}
 			clientSocket.close();
 		} else {
@@ -119,17 +125,18 @@ public class WebServer {
 	// Probar localhost:35000/demo.html, este lee el .html, .css y .js
 	public String getResource(URI resourceURI) throws IOException {
 		StringBuilder response = new StringBuilder();
-		
+
 		Charset charset = Charset.forName("UTF-8");
 		Path htmlFile = Paths.get("target/classes/public" + resourceURI.getPath());
 
 		try (BufferedReader in = Files.newBufferedReader(htmlFile, charset)) {
 			System.out.println("Entra!!!!!!!! ");
 			String str, type = null;
-			
+
 			type = setMimeTypeContent(resourceURI.getPath());
-			response = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: " + type + "\r\n"); // Define MimeType of file
-			
+			response = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: " + type + "\r\n"); // Define MimeType
+																									// of file
+
 			while ((str = in.readLine()) != null) {
 				response.append(str + "\n");
 			}
