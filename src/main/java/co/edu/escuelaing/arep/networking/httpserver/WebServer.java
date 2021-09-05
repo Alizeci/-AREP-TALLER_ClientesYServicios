@@ -101,9 +101,9 @@ public class WebServer {
 							if ((ls_uriStr != null) && (!ls_uriStr.isEmpty())) {
 								URI resourceURI;
 								resourceURI = new URI(ls_uriStr);
-								System.out.println("resourceURI: " + resourceURI);
 
 								outputLine = getResource(resourceURI);
+								System.out.println(outputLine);
 								out.println(outputLine);
 							}
 						}
@@ -130,7 +130,6 @@ public class WebServer {
 		Path htmlFile = Paths.get("target/classes/public" + resourceURI.getPath());
 
 		try (BufferedReader in = Files.newBufferedReader(htmlFile, charset)) {
-			System.out.println("Entra!!!!!!!! ");
 			String str, type = null;
 
 			type = setMimeTypeContent(resourceURI.getPath());
@@ -140,7 +139,6 @@ public class WebServer {
 			while ((str = in.readLine()) != null) {
 				response.append(str + "\n");
 			}
-			System.out.println(response);
 
 		} catch (IOException e) {
 			System.err.format("IOException: %s%n", e);
