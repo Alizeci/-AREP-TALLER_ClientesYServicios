@@ -10,19 +10,30 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Clase que contiene todas las características del Webserver.
+ * @author aleja
+ * 05/09/2021
+ */
 public class WebServer {
 
-	private static final WebServer _instance = new WebServer();
+	/**
+	 * Atributo que define el WebServer
+	 */
+	public static final WebServer _instance = new WebServer();
+	
+	
+	public WebServer() {
 
-	public static WebServer getInstance() {
-
-		return _instance;
 	}
 
-	private WebServer() {
-
-	}
-
+	/**
+	 * Preparando la comunicación para el intercambio de mensajes.
+	 * @param args - peticiones del cliente
+	 * @param port - puerto de comunicación
+	 * @throws IOException - Cuando no es posible establecer la comunicación
+	 * @throws URISyntaxException - Cuando no es posible interpretar la URI
+	 */
 	public void startSocket(String[] args, int port) throws IOException, URISyntaxException {
 		ServerSocket serverSocket = null;
 		try {
@@ -47,7 +58,13 @@ public class WebServer {
 		}
 		serverSocket.close();
 	}
-
+	
+	/**
+	 * Conectando el Cliente con el Servidor y atendiendo su petición(es).
+	 * @param clientSocket - brinda comunicación al cliente
+	 * @throws IOException - Cuando no es posible establecer la comunicación
+	 * @throws URISyntaxException - Cuando no es posible interpretar la URI
+	 */
 	public void serverConnection(Socket clientSocket) throws IOException, URISyntaxException {
 		if (clientSocket != null) {
 
@@ -118,6 +135,12 @@ public class WebServer {
 	}
 
 	// Probar localhost:35000/demo.html, este lee el .html, .css y .js
+	/**
+	 * Permite leer un recurso de tipo .html, .css y .js
+	 * @param resourceURI - Ruta del recurso requerido.
+	 * @return El contenido del recurso.
+	 * @throws IOException - Cuando no es posible leer el recurso.
+	 */
 	public String getResource(URI resourceURI) throws IOException {
 		StringBuilder response = new StringBuilder();
 
@@ -140,7 +163,12 @@ public class WebServer {
 		}
 		return response.toString();
 	}
-
+	
+	/**
+	 * Permite conocer el tipo de recurso
+	 * @param path - recurso
+	 * @return El tipo del recurso
+	 */
 	private String setMimeTypeContent(String path) {
 		String type = null;
 		if (path.contains(".css")) {
@@ -152,7 +180,11 @@ public class WebServer {
 		}
 		return type;
 	}
-
+	
+	/**
+	 * Página por defecto al intentar conectar con el servidor
+	 * @return la página por defecto en html
+	 */
 	private String default404Response() {
 		String outputLine = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n" + "<!DOCTYPE html>\n"
 				+ "<html>\n" + "	<head>\n" + "		<meta charset=\"UTF-8\">\n" + "		<title>Error</title>\n"

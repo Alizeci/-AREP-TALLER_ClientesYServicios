@@ -7,13 +7,25 @@ import java.util.logging.Logger;
 
 import co.edu.escuelaing.arep.networking.httpserver.WebServer;
 
+/**
+ * Clase que contiene las caracteristicas principales de comunicación para Heroku usando librerías para manejo de red de java
+ * @author aleja
+ *
+ */
 public class App {
 	
+	/**
+	 * Puente de comunicación
+	 */
 	public static final Integer PORT = 35000;
 	
+	/**
+	 * Inicia el WebServer
+	 * @param args - conexión al servidor
+	 */
 	public static void main(String[] args) {
 
-		WebServer httpServer = WebServer.getInstance();
+		WebServer httpServer = WebServer._instance;
 		try {
 			httpServer.startSocket(args, getPort());
 		} catch (IOException | URISyntaxException e) {
