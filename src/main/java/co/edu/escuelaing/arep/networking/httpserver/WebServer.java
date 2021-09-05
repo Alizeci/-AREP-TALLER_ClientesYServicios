@@ -133,7 +133,7 @@ public class WebServer {
 			String str, type = null;
 
 			type = setMimeTypeContent(resourceURI.getPath());
-			response = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: " + type + "\r\n"); // Define MimeType
+			response = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: " + type + "\r\n" + "\r\n"); // Define MimeType
 																									// of file
 
 			while ((str = in.readLine()) != null) {
