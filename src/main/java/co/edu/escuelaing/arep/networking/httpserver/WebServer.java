@@ -72,7 +72,6 @@ public class WebServer {
 				if (lisr_inputStreamReader != null) {
 					in = new BufferedReader(lisr_inputStreamReader); // recibir msgs del Cliente
 
-					System.out.println("tiene lineas por leer: " + in.ready());
 					if (in != null && in.ready()) {
 
 						while ((inputLine = in.readLine()) != null) {
@@ -84,7 +83,6 @@ public class WebServer {
 						}
 					}
 					String ls_request;
-					System.out.println("#" + request.toString() + "#");
 
 					ls_request = request.toString();
 
@@ -103,12 +101,10 @@ public class WebServer {
 								resourceURI = new URI(ls_uriStr);
 
 								outputLine = getResource(resourceURI);
-								System.out.println(outputLine);
 								out.println(outputLine);
 							}
 						}
 					}
-
 					out.close();
 					in.close();
 				}
@@ -135,7 +131,6 @@ public class WebServer {
 			type = setMimeTypeContent(resourceURI.getPath());
 			response = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: " + type + "\r\n" + "\r\n"); // Define MimeType
 																									// of file
-
 			while ((str = in.readLine()) != null) {
 				response.append(str + "\n");
 			}
@@ -144,7 +139,6 @@ public class WebServer {
 			System.err.format("IOException: %s%n", e);
 			return default404Response();
 		}
-
 		return response.toString();
 	}
 

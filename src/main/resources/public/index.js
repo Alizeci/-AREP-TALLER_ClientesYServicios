@@ -1,4 +1,3 @@
-
 var Module = (() => {
     
     const getMessage = () => {
