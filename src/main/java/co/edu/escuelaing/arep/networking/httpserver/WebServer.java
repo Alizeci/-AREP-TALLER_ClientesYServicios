@@ -129,7 +129,7 @@ public class WebServer {
 			String str, type = null;
 
 			type = setMimeTypeContent(resourceURI.getPath());
-			response = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: " + type + "\r\n" + "\r\n"); // Define MimeType
+			response = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: " + type + "\r\n"); // Define MimeType
 																									// of file
 			while ((str = in.readLine()) != null) {
 				response.append(str + "\n");
@@ -155,7 +155,7 @@ public class WebServer {
 	}
 
 	private String default404Response() {
-		String outputLine = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "\r\n" + "<!DOCTYPE html>\n"
+		String outputLine = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/html\r\n" + "<!DOCTYPE html>\n"
 				+ "<html>\n" + "	<head>\n" + "		<meta charset=\"UTF-8\">\n" + "		<title>Error</title>\n"
 				+ "	</head>\n" + "	<body>\n" + "		<h1>NOT FOUND 404</h1>\n" + "	</body>\n" + "</html>\n";
 		return outputLine;
