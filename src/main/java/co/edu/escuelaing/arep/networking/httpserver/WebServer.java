@@ -75,9 +75,9 @@ public class WebServer {
                     }
                 }
                 String[] ls_request;
+                System.out.println("#"+request.toString()+"#");
                 ls_request = request.toString().split(" ");
                 
-                System.out.println(ls_request.toString());
                 if ((ls_request != null)) {
                 	try {
                 		String ls_uriStr;
