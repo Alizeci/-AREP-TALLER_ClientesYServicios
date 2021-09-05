@@ -83,7 +83,6 @@ public class WebServer {
 						}
 					}
 					String ls_request;
-
 					ls_request = request.toString();
 
 					if ((ls_request != null) && (!ls_request.isEmpty())) {
@@ -101,6 +100,7 @@ public class WebServer {
 								resourceURI = new URI(ls_uriStr);
 
 								outputLine = getResource(resourceURI);
+								System.out.println(outputLine);
 								out.println(outputLine);
 							}
 						}
