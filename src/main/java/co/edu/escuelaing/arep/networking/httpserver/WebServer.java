@@ -78,16 +78,21 @@ public class WebServer {
                 ls_request = request.toString().split(" ");
 
                 if ((ls_request != null)) {
-                    String ls_uriStr;
-                    ls_uriStr = ls_request[1];
+                	try {
+                		String ls_uriStr;
+                		ls_uriStr = ls_request[1];
+                		
+                		if ((ls_uriStr != null) && (!ls_uriStr.isEmpty())) {
+                			URI resourceURI;
+                			resourceURI = new URI(ls_uriStr);
+                			
+                			outputLine = getResource(resourceURI);
+                			out.println(outputLine);
+                		}	
+                	}catch(IOException e) {
+                		throw new IOException("ServerConnection ls_request  "+ e.getMessage());
+                	}
 
-                    if ((ls_uriStr != null) && (!ls_uriStr.isEmpty())) {
-                        URI resourceURI;
-                        resourceURI = new URI(ls_uriStr);
-                      
-                        outputLine = getResource(resourceURI);
-                        out.println(outputLine);
-                    }
                 }
                 // System.out.println("Received URI path: " + resourceURI.getPath());
                 // System.out.println("Received URI query: " + resourceURI.getQuery());
