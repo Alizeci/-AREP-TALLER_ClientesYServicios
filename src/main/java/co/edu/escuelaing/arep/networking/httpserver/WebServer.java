@@ -61,6 +61,7 @@ public class WebServer {
 			lis_inputStream = clientSocket.getInputStream();
 
 			if ((los_outputStream != null) && (lis_inputStream != null) && (lis_inputStream.read() > 0)) {
+				System.out.println("Entra bien 1");
 				String inputLine, outputLine;
 				StringBuilder request;
 
@@ -69,9 +70,10 @@ public class WebServer {
 				in = new BufferedReader(new InputStreamReader(lis_inputStream)); // recibir msgs del Cliente
 				System.out.println("tiene lineas por leer: "+ in.ready());
 				if (in != null && in.ready()) {
+					System.out.println("Entra bien 2");
 
 					while ((inputLine = in.readLine()) != null) {
-						// System.out.println("Received: " + inputLine);
+						System.out.println("Received: " + inputLine);
 						request.append(inputLine);
 						if (!in.ready()) {
 							break;
@@ -92,6 +94,7 @@ public class WebServer {
 						if ((las_request != null)) {
 
 							ls_uriStr = las_request[1];
+							System.out.println("ls_uriStr: "+ ls_uriStr);
 
 							if ((ls_uriStr != null) && (!ls_uriStr.isEmpty())) {
 								URI resourceURI;
