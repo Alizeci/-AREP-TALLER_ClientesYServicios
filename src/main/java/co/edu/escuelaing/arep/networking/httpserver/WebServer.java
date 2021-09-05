@@ -97,10 +97,13 @@ public class WebServer {
 							System.out.println("ls_uriStr: "+ ls_uriStr);
 
 							if ((ls_uriStr != null) && (!ls_uriStr.isEmpty())) {
+								System.out.println("Entra bien 3");
 								URI resourceURI;
 								resourceURI = new URI(ls_uriStr);
+								System.out.println("resourceURI: "+ resourceURI);
 
 								outputLine = getResource(resourceURI);
+								System.out.println("outputLine: "+ outputLine);
 								out.println(outputLine);
 							}
 						}
