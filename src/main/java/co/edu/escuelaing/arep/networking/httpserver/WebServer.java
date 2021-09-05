@@ -55,20 +55,18 @@ public class WebServer {
 			BufferedReader in;
 			OutputStream los_outputStream;
 			InputStream lis_inputStream;
-			InputStreamReader lir_inputStream;
+			//InputStreamReader lir_inputStream;
 
 			los_outputStream = clientSocket.getOutputStream();
 			lis_inputStream = clientSocket.getInputStream();
-			lir_inputStream = new InputStreamReader(lis_inputStream);
 
-			System.out.println("inpustream: "+ lir_inputStream);
-			if ((los_outputStream != null) && (lis_inputStream != null) && (lir_inputStream.ready())) {
+			if ((los_outputStream != null) && (lis_inputStream != null) && (lis_inputStream.read() > 0)) {
 				String inputLine, outputLine;
 				StringBuilder request;
 
 				request = new StringBuilder();
 				out = new PrintWriter(los_outputStream, true); // envío de msgs al Cliente.
-				in = new BufferedReader(lir_inputStream); // recibir msgs del Cliente
+				in = new BufferedReader(new InputStreamReader(lis_inputStream)); // recibir msgs del Cliente
 				System.out.println("tiene lineas por leer: "+ in.ready());
 				if (in != null && in.ready()) {
 
