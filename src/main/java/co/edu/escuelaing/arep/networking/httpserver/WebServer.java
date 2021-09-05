@@ -100,7 +100,6 @@ public class WebServer {
 								resourceURI = new URI(ls_uriStr);
 
 								outputLine = getResource(resourceURI);
-								System.out.println(outputLine);
 								out.println(outputLine);
 							}
 						}
