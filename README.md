@@ -3,9 +3,9 @@
 Se construye un servidor web que soporte múlltiples solicitudes seguidas (no concurrentes). El servidor retornar todos los archivos solicitados, incluyendo páginas html e imágenes. También se construye un sitio web con javascript para probar el servidor. Se usa solo Java y las librerías para manejo de la red.
 
 ## Entendimiento 🎯
-Se puede evidenciar la capacidad del servidor web para gestionar recursos estáticos de tipo: *.html*, *.css*, *.js*, *.png* para ser leidos por el Cliente. 
+Se puede evidenciar la capacidad del servidor web para gestionar **recursos estáticos** de subtipo: *.html*, *.css*, *.js*, *.jpg*, *.png* para ser leidos por el Cliente. Los *subtipos de los archivos* recibidos de tipo **image** y **text** pueden ser *extendidos*, agregandolos al Map en **MimeTypes.java**.
 
-Ejemplos de recursos accesibles desde el servidor: [.html](https://website-client-server.herokuapp.com/index.html), .png
+Ejemplos de recursos accesibles desde el navegador: [.html](https://website-client-server.herokuapp.com/index.html), [.jpg](https://website-client-server.herokuapp.com/fall.jpg), [testImage.html](https://website-client-server.herokuapp.com/testImage.html) *(Imágen incrustada en html)*
 
 ## Herramientas utilizadas
 
