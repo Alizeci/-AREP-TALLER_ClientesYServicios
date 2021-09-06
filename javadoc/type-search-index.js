@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"co.edu.escuelaing.arep.networking","l":"App"},{"p":"co.edu.escuelaing.arep.networking","l":"AppTest"},{"p":"co.edu.escuelaing.arep.networking.httpserver","l":"WebServer"}]
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"co.edu.escuelaing.arep.networking","l":"App"},{"p":"co.edu.escuelaing.arep.networking","l":"AppTest"},{"p":"co.edu.escuelaing.arep.networking.httpserver","l":"MimeType"},{"p":"co.edu.escuelaing.arep.networking.httpserver","l":"WebServer"}]

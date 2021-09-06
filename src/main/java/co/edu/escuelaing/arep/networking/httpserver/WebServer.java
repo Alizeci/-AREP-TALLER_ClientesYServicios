@@ -1,5 +1,6 @@
 package co.edu.escuelaing.arep.networking.httpserver;
 
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,10 +11,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.imageio.ImageIO;
+
 /**
  * Clase que contiene todas las características del Webserver.
- * @author aleja
- * 05/09/2021
+ * 
+ * @author aleja 05/09/2021
  */
 public class WebServer {
 
@@ -21,17 +24,17 @@ public class WebServer {
 	 * Atributo que define el WebServer
 	 */
 	public static final WebServer _instance = new WebServer();
-	
-	
+
 	public WebServer() {
 
 	}
 
 	/**
 	 * Preparando la comunicación para el intercambio de mensajes.
+	 * 
 	 * @param args - peticiones del cliente
 	 * @param port - puerto de comunicación
-	 * @throws IOException - Cuando no es posible establecer la comunicación
+	 * @throws IOException        - Cuando no es posible establecer la comunicación
 	 * @throws URISyntaxException - Cuando no es posible interpretar la URI
 	 */
 	public void startSocket(String[] args, int port) throws IOException, URISyntaxException {
@@ -58,12 +61,13 @@ public class WebServer {
 		}
 		serverSocket.close();
 	}
-	
+
 	/**
 	 * Conectando el Cliente con el Servidor y atendiendo su petición(es).
-	 * @param clientSocket - brinda comunicación al cliente
-	 * @throws IOException - Cuando no es posible establecer la comunicación
-	 * @throws URISyntaxException - Cuando no es posible interpretar la URI
+	 * 
+	 * @param clientSocket - Comunicación con el cliente
+	 * @throws IOException        - Cuando no es posible establecer la comunicación.
+	 * @throws URISyntaxException - Cuando no es posible interpretar la URI.
 	 */
 	public void serverConnection(Socket clientSocket) throws IOException, URISyntaxException {
 		if (clientSocket != null) {
@@ -114,10 +118,22 @@ public class WebServer {
 
 							if ((ls_uriStr != null) && (!ls_uriStr.isEmpty())) {
 								URI resourceURI;
+
+								String mimeType = MimeType.getMimeType(ls_uriStr); // Obtener el tipo de contenido de
+																					// los recursos
 								resourceURI = new URI(ls_uriStr);
 
-								outputLine = getResource(resourceURI);
-								out.println(outputLine);
+								if (ls_uriStr.equals("/") || (!mimeType.equals(MimeType.MIME_APPLICATION_OCTET_STREAM))) {
+
+									if (mimeType.contains("image")) {
+										getImageResource(resourceURI, los_outputStream, mimeType);
+									} else {
+										outputLine = getTextResource(resourceURI, mimeType);
+										out.println(outputLine);
+									}
+								}else {
+									throw new IOException("ServerConnection MimeType desconocido!");
+								}
 							}
 						}
 					}
@@ -126,7 +142,6 @@ public class WebServer {
 				}
 			} else {
 				throw new IOException("ServerConnection BufferReader input vacío o nulo!");
-
 			}
 			clientSocket.close();
 		} else {
@@ -134,25 +149,26 @@ public class WebServer {
 		}
 	}
 
-	// Probar localhost:35000/demo.html, este lee el .html, .css y .js
+	// Probar localhost:35000/index.html, este lee el .html, .css y .js
 	/**
 	 * Permite leer un recurso de tipo .html, .css y .js
-	 * @param resourceURI - Ruta del recurso requerido.
+	 * 
+	 * @param resourceURI - Ruta del recurso requerido de tipo text.
+	 * @param mimeType - Tipo de contenido del archivo.
 	 * @return El contenido del recurso.
 	 * @throws IOException - Cuando no es posible leer el recurso.
 	 */
-	public String getResource(URI resourceURI) throws IOException {
+	public String getTextResource(URI resourceURI, String mimeType) throws IOException {
 		StringBuilder response = new StringBuilder();
 
 		Charset charset = Charset.forName("UTF-8");
 		Path htmlFile = Paths.get("target/classes/public" + resourceURI.getPath());
 
 		try (BufferedReader in = Files.newBufferedReader(htmlFile, charset)) {
-			String str, type = null;
+			String str;
 
-			type = setMimeTypeContent(resourceURI.getPath());
-			response = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: " + type + "\r\n" + "\r\n"); // Define MimeType
-																									// of file
+			response = new StringBuilder("HTTP/1.1 200 OK\r\n" + "Content-Type: " + mimeType + "\r\n" + "\r\n");
+
 			while ((str = in.readLine()) != null) {
 				response.append(str + "\n");
 			}
@@ -163,26 +179,43 @@ public class WebServer {
 		}
 		return response.toString();
 	}
-	
+
+	// Probar localhost:35000/testImage.html, este lee el .jpg, .png
 	/**
-	 * Permite conocer el tipo de recurso
-	 * @param path - recurso
-	 * @return El tipo del recurso
+	 * Permite leer un recurso de tipo .jpg, .png
+	 * 
+	 * @param resourceURI      - Ruta del recurso requerido de tipo image
+	 * @param los_outputStream - Salida de la escritura.
+	 * @param mimeType         - tipo de contenido standard a través de la red.
+	 * @throws IOException - Cuando no es posible leer el recurso.
 	 */
-	private String setMimeTypeContent(String path) {
-		String type = null;
-		if (path.contains(".css")) {
-			type = "text/css";
-		} else if (path.contains(".html")) {
-			type = "text/html";
-		} else if (path.contains(".js")) {
-			type = "text/javascript";
+	private void getImageResource(URI resourceURI, OutputStream los_outputStream, String mimeType) throws IOException {
+		String path = "target/classes/public" + resourceURI.getPath();
+		File file = new File(path);
+
+		if (file.exists()) {
+			try {
+				BufferedImage in_image = ImageIO.read(file);
+				if (in_image != null) {
+					ByteArrayOutputStream lab_outputStream = new ByteArrayOutputStream();
+					DataOutputStream writeimg = new DataOutputStream(los_outputStream);
+
+					ImageIO.write(in_image, MimeType.getExt(mimeType), lab_outputStream);
+					writeimg.writeBytes("HTTP/1.1 200 OK \r\n" + "Content-Type: " + mimeType + "\r\n" + "\r\n");
+					writeimg.write(lab_outputStream.toByteArray());
+				}
+			} catch (IOException e) {
+				System.err.format("IOException: %s%n", e);
+				throw new IOException("getImageResource DataOutputStream no puede ser nulo!");
+			}
+		} else {
+			throw new IOException("getImageResource File no existe!");
 		}
-		return type;
 	}
-	
+
 	/**
 	 * Página por defecto al intentar conectar con el servidor
+	 * 
 	 * @return la página por defecto en html
 	 */
 	private String default404Response() {

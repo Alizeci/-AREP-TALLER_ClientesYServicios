@@ -7,6 +7,12 @@ h1 {
   margin-top: 50%;
 }
 
+h1.health {
+  color: steelblue;
+  text-align: center;
+  margin-top: 2%;
+}
+
 img.i1{
     display:block;
     margin:auto;
