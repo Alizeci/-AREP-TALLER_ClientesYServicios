@@ -7,6 +7,9 @@ Se puede evidenciar la capacidad del servidor web para gestionar **recursos est�
 
 Ejemplos de recursos accesibles desde el navegador: [.html](https://website-client-server.herokuapp.com/index.html), [.jpg](https://website-client-server.herokuapp.com/fall.jpg), [testImage.html](https://website-client-server.herokuapp.com/testImage.html) *(Imágen incrustada en html)*
 
+## Descripción Arquitectura ![Descripción detallada](https://img.icons8.com/windows/32/000000/product-architecture.png)
+Para conocerla en detalle acceda a [descripción de diseño](https://github.com/Alizeci/AREP-TALLER_ClientesYServicios/blob/main/articuloLaTEX.pdf).
+
 ## Herramientas utilizadas
 
 | Nombre | Uso |
