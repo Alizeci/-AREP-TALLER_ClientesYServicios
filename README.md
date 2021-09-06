@@ -1,19 +1,22 @@
-# TALLER CLIENTES Y SERVICIOS
-Este taller presenta diferentes retos que loa ayudaran a explorar los conceptos de esquemas de nombres y de clientes y servicios. Adicionalmente, el taller le ayudará a explorar la arquitectura de las aplicaciones distribuidas sobre internet.
+## Construcción de un Servidor Web [![Heroku](https://img.icons8.com/color/25/000000/heroku.png)](https://website-client-server.herokuapp.com)
 
-#### Enlace a Heroku
-[![Heroku](https://img.icons8.com/color/48/000000/heroku.png)](https://website-client-server.herokuapp.com)
+Se construye un servidor web que soporte múlltiples solicitudes seguidas (no concurrentes). El servidor retornar todos los archivos solicitados, incluyendo páginas html e imágenes. También se construye un sitio web con javascript para probar el servidor. Se usa solo Java y las librerías para manejo de la red.
+
+## Entendimiento 🎯
+Se puede evidenciar la capacidad del servidor web para gestionar recursos estáticos de tipo: *.html*, *.css*, *.js*, *.png* para ser leidos por el Cliente. 
+
+Ejemplos de recursos accesibles desde el servidor: [.html](https://website-client-server.herokuapp.com/index.html), .png
 
 ## Herramientas utilizadas
 
-| Herramienta | Uso |
+| Nombre | Uso |
 | ------ | ------ |
-| Maven | Gestión y construcción del proyecto |
-| Eclipse IDE | Plataforma de desarrollo |
-| JUnit | Automatización de pruebas unitarias |
-| Git | Sistema de control de versiones |
-| Github | Respositorio del código fuente |
-| Heroku | Plataforma de producción |
+| **Maven** ![Maven](https://img.icons8.com/ios/25/000000/maven-ios.png) | Gestión y construcción del proyecto |
+| **Eclipse IDE** ![Eclipse](https://img.icons8.com/office/25/000000/java-eclipse.png) | Plataforma de desarrollo |
+| **JUnit** ![JUnit](https://img.icons8.com/fluency/25/000000/test-partial-passed.png) | Automatización de pruebas unitarias |
+| **Git** ![Git](https://img.icons8.com/color/25/000000/git.png) | Sistema de control de versiones |
+| **Github** ![Github](https://img.icons8.com/windows/25/000000/github.png) | Respositorio del código fuente |
+| **Heroku** [![Heroku](https://img.icons8.com/color/25/000000/heroku.png)](https://website-client-server.herokuapp.com) | Plataforma de producción |
 
-## Autor
+## Autor ![Autor](https://img.icons8.com/fluency/30/000000/person-female.png)
 Laura Alejandra Izquierdo Castro
