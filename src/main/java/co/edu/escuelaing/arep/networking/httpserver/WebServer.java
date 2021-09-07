@@ -50,7 +50,7 @@ public class WebServer {
 		while (running) {
 			Socket clientSocket = null;
 			try {
-				System.out.println("Listo para recibir ...");
+				//System.out.println("Listo para recibir ...");
 				clientSocket = serverSocket.accept();
 
 			} catch (IOException e) {
@@ -123,15 +123,23 @@ public class WebServer {
 																					// los recursos
 								resourceURI = new URI(ls_uriStr);
 
-								if (ls_uriStr.equals("/") || (!mimeType.equals(MimeType.MIME_APPLICATION_OCTET_STREAM))) {
+								if (ls_uriStr.equals("/")
+										|| (!mimeType.equals(MimeType.MIME_APPLICATION_OCTET_STREAM))) {
 
 									if (mimeType.contains("image")) {
-										getImageResource(resourceURI, los_outputStream, mimeType);
+										String path = "target/classes/public" + resourceURI.getPath();
+										File file = new File(path);
+										
+										if (file.exists()) {
+											getImageResource(file, los_outputStream, mimeType);
+										} else {
+											out.println(default404Response());
+										}
 									} else {
 										outputLine = getTextResource(resourceURI, mimeType);
 										out.println(outputLine);
 									}
-								}else {
+								} else {
 									throw new IOException("ServerConnection MimeType desconocido!");
 								}
 							}
@@ -154,7 +162,7 @@ public class WebServer {
 	 * Permite leer un recurso de tipo .html, .css y .js
 	 * 
 	 * @param resourceURI - Ruta del recurso requerido de tipo text.
-	 * @param mimeType - Tipo de contenido del archivo.
+	 * @param mimeType    - Tipo de contenido del archivo.
 	 * @return El contenido del recurso.
 	 * @throws IOException - Cuando no es posible leer el recurso.
 	 */
@@ -184,32 +192,25 @@ public class WebServer {
 	/**
 	 * Permite leer un recurso de tipo .jpg, .png
 	 * 
-	 * @param resourceURI      - Ruta del recurso requerido de tipo image
+	 * @param File     - recurso extraido de disco tipo image
 	 * @param los_outputStream - Salida de la escritura.
 	 * @param mimeType         - tipo de contenido standard a través de la red.
 	 * @throws IOException - Cuando no es posible leer el recurso.
 	 */
-	private void getImageResource(URI resourceURI, OutputStream los_outputStream, String mimeType) throws IOException {
-		String path = "target/classes/public" + resourceURI.getPath();
-		File file = new File(path);
+	private void getImageResource(File file, OutputStream los_outputStream, String mimeType) throws IOException {
+		try {
+			BufferedImage in_image = ImageIO.read(file);
+			if (in_image != null) {
+				ByteArrayOutputStream lab_outputStream = new ByteArrayOutputStream();
+				DataOutputStream writeimg = new DataOutputStream(los_outputStream);
 
-		if (file.exists()) {
-			try {
-				BufferedImage in_image = ImageIO.read(file);
-				if (in_image != null) {
-					ByteArrayOutputStream lab_outputStream = new ByteArrayOutputStream();
-					DataOutputStream writeimg = new DataOutputStream(los_outputStream);
-
-					ImageIO.write(in_image, MimeType.getExt(mimeType), lab_outputStream);
-					writeimg.writeBytes("HTTP/1.1 200 OK \r\n" + "Content-Type: " + mimeType + "\r\n" + "\r\n");
-					writeimg.write(lab_outputStream.toByteArray());
-				}
-			} catch (IOException e) {
-				System.err.format("IOException: %s%n", e);
-				throw new IOException("getImageResource DataOutputStream no puede ser nulo!");
+				ImageIO.write(in_image, MimeType.getExt(mimeType), lab_outputStream);
+				writeimg.writeBytes("HTTP/1.1 200 OK \r\n" + "Content-Type: " + mimeType + "\r\n" + "\r\n");
+				writeimg.write(lab_outputStream.toByteArray());
 			}
-		} else {
-			throw new IOException("getImageResource File no existe!");
+		} catch (IOException e) {
+			System.err.format("IOException: %s%n", e);
+			throw new IOException("getImageResource DataOutputStream no puede ser nulo!");
 		}
 	}
 
